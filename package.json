@@ -1,0 +1,8 @@
+{
+  "name": "akshaya-birthday-wish",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A birthday surprise and wish wall for Akshaya",
+  "scripts": { "build": "node build.mjs" },
+  "dependencies": { "@netlify/blobs": "11.0.3" }
+}

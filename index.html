@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8b123f">
+    <meta name="description" content="A birthday surprise for Akshaya, with love and warm wishes.">
+    <title>A Birthday Surprise for Akshaya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <section id="countdownScreen" class="countdown-screen" aria-labelledby="countdownTitle">
+            <div class="countdown-glow" aria-hidden="true"></div>
+            <div class="countdown-card">
+                <span class="eyebrow">A little surprise is waiting</span>
+                <h1 id="countdownTitle">Counting down to<br><em>Akshaya's day</em></h1>
+                <p class="countdown-date">September 12 · 12:00 AM IST</p>
+                <div class="countdown" role="timer" aria-live="polite" aria-label="Time remaining until Akshaya's birthday">
+                    <div class="time-block"><strong id="days">00</strong><span>Days</span></div><span class="time-separator" aria-hidden="true">:</span>
+                    <div class="time-block"><strong id="hours">00</strong><span>Hours</span></div><span class="time-separator" aria-hidden="true">:</span>
+                    <div class="time-block"><strong id="minutes">00</strong><span>Minutes</span></div><span class="time-separator" aria-hidden="true">:</span>
+                    <div class="time-block"><strong id="seconds">00</strong><span>Seconds</span></div>
+                </div>
+                <div class="countdown-actions">
+                    <button id="showNow" class="primary-btn" type="button"><span>Preview the surprise</span><span aria-hidden="true">♥</span></button>
+                    <button id="openCountdownWishes" class="countdown-wish-btn" type="button"><span aria-hidden="true">♡</span><span>Leave a birthday wish</span></button>
+                </div>
+                <p class="testing-note">Testing button — the surprise opens automatically on the birthday.</p>
+            </div>
+        </section>
+
+        <section id="birthdayScreen" class="birthday-screen is-hidden" aria-label="Happy birthday Akshaya">
+            <div class="background-container" aria-hidden="true"></div>
+            <div class="content-overlay" aria-hidden="true">
+                <div class="balloons-container">
+                    <div class="balloon balloon1"></div><div class="balloon balloon2"></div><div class="balloon balloon3"></div><div class="balloon balloon4"></div><div class="balloon balloon5"></div>
+                </div>
+            </div>
+            <div class="top-actions">
+                <button id="musicToggle" class="pill-btn" type="button" aria-pressed="false"><span class="button-icon" aria-hidden="true">♫</span><span id="musicLabel">Play music</span></button>
+                <button id="openWishes" class="pill-btn wishes-btn" type="button"><span class="button-icon" aria-hidden="true">♡</span>Leave a wish</button>
+            </div>
+            <aside class="wish-stream" aria-label="Birthday wishes">
+                <div class="live-label"><span aria-hidden="true"></span> Wishes</div>
+                <div class="wish-viewport"><div id="wishTicker" class="wish-ticker"><p class="empty-ticker">Be the first to leave Akshaya a birthday wish ✨</p></div></div>
+                <button id="viewWishes" class="stream-link" type="button">View all</button>
+            </aside>
+        </section>
+    </main>
+
+    <dialog id="wishesDialog" class="wishes-dialog" aria-labelledby="wishesTitle">
+        <div class="dialog-shell">
+            <button id="closeWishes" class="close-btn" type="button" aria-label="Close wishes">×</button>
+            <section class="wish-form-panel">
+                <span class="eyebrow">Add a little joy</span>
+                <h2 id="wishesTitle">Wish Akshaya</h2>
+                <p>Leave a note she can come back to long after the candles are gone.</p>
+                <form id="wishForm">
+                    <label for="wisherName">Your name</label>
+                    <input id="wisherName" name="name" type="text" maxlength="40" autocomplete="name" placeholder="How should we sign it?" required>
+                    <label for="wishMessage">Your wish</label>
+                    <textarea id="wishMessage" name="message" maxlength="280" rows="5" placeholder="Write something from the heart…" required></textarea>
+                    <div class="form-meta"><span id="characterCount">0 / 280</span></div>
+                    <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+                    <button id="submitWish" class="primary-btn submit-btn" type="submit">Send my wish <span aria-hidden="true">♥</span></button>
+                    <p id="formStatus" class="form-status" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+            <section class="wish-wall-panel" aria-labelledby="wishWallTitle">
+                <div class="wall-heading"><div><span class="eyebrow">Made with love</span><h3 id="wishWallTitle">Wish wall</h3></div><span id="wishCount" class="wish-count">0 wishes</span></div>
+                <div id="wishList" class="wish-list" aria-live="polite"><div class="loading-wishes">Gathering lovely wishes…</div></div>
+            </section>
+        </div>
+    </dialog>
+
+    <audio id="bgMusic" loop preload="auto"><source src="assets/Happy Birthday Instrumental.mp3" type="audio/mpeg"></audio>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
