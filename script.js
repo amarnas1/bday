@@ -19,7 +19,6 @@ function setupCountdown() {
         setTimeValue('minutes', Math.floor((remaining % 3600000) / 60000));
         setTimeValue('seconds', Math.floor((remaining % 60000) / 1000));
     };
-    document.getElementById('showNow').addEventListener('click', () => { clearInterval(timer); revealBirthday(); });
     screen.addEventListener('transitionend', () => { if (state.revealed) screen.hidden = true; });
     update();
     timer = window.setInterval(update, 1000);
