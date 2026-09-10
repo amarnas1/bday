@@ -73,13 +73,31 @@ function updateMusicButton(playing) {
 function setupWishes() {
     const dialog = document.getElementById('wishesDialog');
     const message = document.getElementById('wishMessage');
-    const openDialog = () => { if (!dialog.open) dialog.showModal(); loadWishes(); };
-    document.getElementById('openCountdownWishes').addEventListener('click', openDialog);
-    document.getElementById('openWishes').addEventListener('click', openDialog);
-    document.getElementById('viewWishes').addEventListener('click', openDialog);
+    const openDialog = (wallOnly = false) => {
+        dialog.classList.toggle('is-wall-only', wallOnly);
+        dialog.setAttribute('aria-labelledby', wallOnly ? 'wishWallTitle' : 'wishesTitle');
+        document.getElementById('wishWallTitle').textContent = wallOnly ? 'All birthday wishes' : 'Wish wall';
+        if (!dialog.open) dialog.showModal();
+        loadWishes();
+        if (!wallOnly) window.setTimeout(() => document.getElementById('wisherName').focus(), 0);
+    };
+    document.getElementById('openCountdownWishes').addEventListener('click', () => openDialog());
+    document.getElementById('openWishes').addEventListener('click', () => openDialog());
+    document.getElementById('viewWishes').addEventListener('click', () => openDialog(true));
     document.getElementById('closeWishes').addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
     message.addEventListener('input', () => { document.getElementById('characterCount').textContent = `${message.value.length} / 280`; });
+    document.querySelectorAll('.emoji-btn').forEach((button) => button.addEventListener('click', () => {
+        const emoji = button.dataset.emoji;
+        const start = message.selectionStart;
+        const end = message.selectionEnd;
+        const nextValue = `${message.value.slice(0, start)}${emoji}${message.value.slice(end)}`.slice(0, message.maxLength);
+        message.value = nextValue;
+        const cursor = Math.min(start + emoji.length, nextValue.length);
+        message.setSelectionRange(cursor, cursor);
+        message.dispatchEvent(new Event('input', { bubbles: true }));
+        message.focus();
+    }));
     document.getElementById('wishForm').addEventListener('submit', submitWish);
     window.setInterval(() => { if (state.revealed && !document.hidden) loadWishes(true); }, 15000);
 }

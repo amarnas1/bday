@@ -61,6 +61,15 @@
                     <input id="wisherName" name="name" type="text" maxlength="40" autocomplete="name" placeholder="How should we sign it?" required>
                     <label for="wishMessage">Your wish</label>
                     <textarea id="wishMessage" name="message" maxlength="280" rows="5" placeholder="Write something from the heart…" required></textarea>
+                    <div class="emoji-bar" aria-label="Add an emoji to your wish">
+                        <span>Make it sparkle</span>
+                        <button class="emoji-btn" type="button" data-emoji="🎂" aria-label="Add birthday cake emoji">🎂</button>
+                        <button class="emoji-btn" type="button" data-emoji="🎉" aria-label="Add party popper emoji">🎉</button>
+                        <button class="emoji-btn" type="button" data-emoji="🎈" aria-label="Add balloon emoji">🎈</button>
+                        <button class="emoji-btn" type="button" data-emoji="✨" aria-label="Add sparkles emoji">✨</button>
+                        <button class="emoji-btn" type="button" data-emoji="💖" aria-label="Add sparkling heart emoji">💖</button>
+                        <button class="emoji-btn" type="button" data-emoji="🥳" aria-label="Add party face emoji">🥳</button>
+                    </div>
                     <div class="form-meta"><span id="characterCount">0 / 280</span></div>
                     <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
                     <button id="submitWish" class="primary-btn submit-btn" type="submit">Send my wish <span aria-hidden="true">♥</span></button>
