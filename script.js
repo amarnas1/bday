@@ -20,6 +20,7 @@ function setupCountdown() {
         setTimeValue('seconds', Math.floor((remaining % 60000) / 1000));
     };
     screen.addEventListener('transitionend', () => { if (state.revealed) screen.hidden = true; });
+    document.getElementById('previewBirthday').addEventListener('click', revealBirthday);
     update();
     timer = window.setInterval(update, 1000);
 }
@@ -42,8 +43,7 @@ function setupAudio() {
     const music = document.getElementById('bgMusic');
     const button = document.getElementById('musicToggle');
     music.volume = 0.72;
-    playAudio();
-    const unlock = () => { if (!state.manuallyPaused) playAudio(); };
+    const unlock = () => { if (state.revealed && !state.manuallyPaused) playAudio(); };
     document.addEventListener('pointerdown', unlock, { passive: true });
     document.addEventListener('keydown', unlock);
     music.addEventListener('play', () => updateMusicButton(true));
