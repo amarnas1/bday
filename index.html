@@ -24,6 +24,7 @@
                 </div>
                 <div class="countdown-actions">
                     <button id="openCountdownWishes" class="countdown-wish-btn" type="button"><span aria-hidden="true">♡</span><span>Leave a birthday wish</span></button>
+                    <button id="viewCountdownWishes" class="countdown-wish-btn countdown-view-btn" type="button"><span aria-hidden="true">✦</span><span>Read birthday wishes</span></button>
                 </div>
             </div>
         </section>
@@ -42,7 +43,10 @@
             <aside class="wish-stream" aria-label="Birthday wishes">
                 <div class="live-label"><span aria-hidden="true"></span> Wishes</div>
                 <div class="wish-viewport"><div id="wishTicker" class="wish-ticker"><p class="empty-ticker">Be the first to leave Akshaya a birthday wish ✨</p></div></div>
-                <button id="viewWishes" class="stream-link" type="button">View all</button>
+                <div class="stream-actions" aria-label="Choose how to read birthday wishes">
+                    <button id="viewWishes" class="stream-link" type="button">One by one</button>
+                    <button id="viewAllWishes" class="stream-link" type="button">View all</button>
+                </div>
             </aside>
         </section>
     </main>
@@ -76,6 +80,25 @@
             </section>
             <section class="wish-wall-panel" aria-labelledby="wishWallTitle">
                 <div class="wall-heading"><div><span class="eyebrow">Made with love</span><h3 id="wishWallTitle">Wish wall</h3></div><span id="wishCount" class="wish-count">0 wishes</span></div>
+                <div class="wish-view-switcher" role="group" aria-label="Wish display style">
+                    <button id="showWishSpotlight" class="wish-view-btn is-active" type="button" aria-pressed="true"><span aria-hidden="true">♡</span> One by one</button>
+                    <button id="showWishWall" class="wish-view-btn" type="button" aria-pressed="false"><span aria-hidden="true">▦</span> View all</button>
+                </div>
+                <section id="wishSpotlight" class="wish-spotlight" aria-label="Individual birthday wishes" aria-live="polite">
+                    <div class="spotlight-stage">
+                        <span class="spotlight-quote" aria-hidden="true">“</span>
+                        <p id="spotlightMessage" class="spotlight-message">Gathering lovely wishes…</p>
+                        <footer class="spotlight-footer">
+                            <div class="spotlight-person"><span id="spotlightInitial" class="spotlight-initial" aria-hidden="true">A</span><div><strong id="spotlightName">A friend</strong><time id="spotlightTime"></time></div></div>
+                            <span class="spotlight-heart" aria-hidden="true">♥</span>
+                        </footer>
+                    </div>
+                    <div class="spotlight-controls">
+                        <button id="previousWish" class="spotlight-arrow" type="button" aria-label="Previous wish">‹</button>
+                        <span id="spotlightPosition" class="spotlight-position">0 of 0</span>
+                        <button id="nextWish" class="spotlight-arrow" type="button" aria-label="Next wish">›</button>
+                    </div>
+                </section>
                 <div id="wishList" class="wish-list" aria-live="polite"><div class="loading-wishes">Gathering lovely wishes…</div></div>
             </section>
         </div>

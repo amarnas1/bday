@@ -1,6 +1,6 @@
 const BIRTHDAY_IST = new Date('2026-09-12T00:00:00+05:30');
 const WISHES_ENDPOINT = '/.netlify/functions/wishes';
-const state = { revealed: false, wishes: [], manuallyPaused: false };
+const state = { revealed: false, wishes: [], manuallyPaused: false, wishView: 'single', activeWishIndex: 0 };
 
 document.addEventListener('DOMContentLoaded', () => {
     setupCountdown();
@@ -71,19 +71,39 @@ function updateMusicButton(playing) {
 function setupWishes() {
     const dialog = document.getElementById('wishesDialog');
     const message = document.getElementById('wishMessage');
-    const openDialog = (wallOnly = false) => {
+    const openDialog = (wallOnly = false, viewMode = 'single') => {
         dialog.classList.toggle('is-wall-only', wallOnly);
         dialog.setAttribute('aria-labelledby', wallOnly ? 'wishWallTitle' : 'wishesTitle');
-        document.getElementById('wishWallTitle').textContent = wallOnly ? 'All birthday wishes' : 'Wish wall';
+        document.getElementById('wishWallTitle').textContent = wallOnly ? 'Birthday wishes' : 'Wish wall';
+        setWishView(wallOnly ? viewMode : 'all', false);
         if (!dialog.open) dialog.showModal();
         loadWishes();
         if (!wallOnly) window.setTimeout(() => document.getElementById('wisherName').focus(), 0);
     };
     document.getElementById('openCountdownWishes').addEventListener('click', () => openDialog());
+    document.getElementById('viewCountdownWishes').addEventListener('click', () => openDialog(true, 'single'));
     document.getElementById('openWishes').addEventListener('click', () => openDialog());
-    document.getElementById('viewWishes').addEventListener('click', () => openDialog(true));
+    document.getElementById('viewWishes').addEventListener('click', () => openDialog(true, 'single'));
+    document.getElementById('viewAllWishes').addEventListener('click', () => openDialog(true, 'all'));
+    document.getElementById('showWishSpotlight').addEventListener('click', () => setWishView('single'));
+    document.getElementById('showWishWall').addEventListener('click', () => setWishView('all'));
+    document.getElementById('previousWish').addEventListener('click', () => moveSpotlight(-1));
+    document.getElementById('nextWish').addEventListener('click', () => moveSpotlight(1));
     document.getElementById('closeWishes').addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('keydown', (event) => {
+        if (!dialog.classList.contains('is-single-view')) return;
+        if (event.key === 'ArrowLeft') { event.preventDefault(); moveSpotlight(-1); }
+        if (event.key === 'ArrowRight') { event.preventDefault(); moveSpotlight(1); }
+    });
+    let swipeStartX = null;
+    document.getElementById('wishSpotlight').addEventListener('pointerdown', (event) => { swipeStartX = event.clientX; });
+    document.getElementById('wishSpotlight').addEventListener('pointerup', (event) => {
+        if (swipeStartX === null) return;
+        const distance = event.clientX - swipeStartX;
+        swipeStartX = null;
+        if (Math.abs(distance) > 55) moveSpotlight(distance > 0 ? -1 : 1);
+    });
     message.addEventListener('input', () => { document.getElementById('characterCount').textContent = `${message.value.length} / 280`; });
     document.querySelectorAll('.emoji-btn').forEach((button) => button.addEventListener('click', () => {
         const emoji = button.dataset.emoji;
@@ -147,12 +167,61 @@ function renderWishes() {
     list.replaceChildren();
     if (!wishes.length) {
         const empty = document.createElement('div'); empty.className = 'empty-wishes'; empty.textContent = 'No wishes yet. Yours can be the very first.'; list.appendChild(empty);
-        ticker.innerHTML = '<p class="empty-ticker">Be the first to leave Akshaya a birthday wish ✨</p>'; ticker.style.animation = 'none'; return;
+        ticker.innerHTML = '<p class="empty-ticker">Be the first to leave Akshaya a birthday wish ✨</p>'; ticker.style.animation = 'none'; renderWishSpotlight(); return;
     }
     wishes.forEach((wish) => list.appendChild(createWishCard(wish)));
+    if (state.activeWishIndex >= wishes.length) state.activeWishIndex = 0;
+    renderWishSpotlight();
     ticker.replaceChildren(); ticker.style.animation = '';
     const featured = wishes.slice(0, 10); const repeated = featured.length === 1 ? [...featured, ...featured, ...featured, ...featured] : [...featured, ...featured];
     repeated.forEach((wish) => { const item = document.createElement('p'); const name = document.createElement('strong'); item.className = 'ticker-item'; name.textContent = `${wish.name}: `; item.append(name, document.createTextNode(wish.message)); ticker.appendChild(item); });
+}
+
+function setWishView(view, animate = true) {
+    const dialog = document.getElementById('wishesDialog');
+    state.wishView = view === 'all' ? 'all' : 'single';
+    dialog.classList.toggle('is-single-view', state.wishView === 'single');
+    dialog.classList.toggle('is-all-view', state.wishView === 'all');
+    const singleButton = document.getElementById('showWishSpotlight');
+    const allButton = document.getElementById('showWishWall');
+    singleButton.classList.toggle('is-active', state.wishView === 'single');
+    allButton.classList.toggle('is-active', state.wishView === 'all');
+    singleButton.setAttribute('aria-pressed', String(state.wishView === 'single'));
+    allButton.setAttribute('aria-pressed', String(state.wishView === 'all'));
+    if (state.wishView === 'single') renderWishSpotlight(animate);
+}
+
+function moveSpotlight(direction) {
+    if (!state.wishes.length) return;
+    state.activeWishIndex = (state.activeWishIndex + direction + state.wishes.length) % state.wishes.length;
+    renderWishSpotlight(true, direction);
+}
+
+function renderWishSpotlight(animate = false, direction = 1) {
+    const stage = document.querySelector('.spotlight-stage');
+    const wish = state.wishes[state.activeWishIndex];
+    const previous = document.getElementById('previousWish');
+    const next = document.getElementById('nextWish');
+    if (!wish) {
+        document.getElementById('spotlightMessage').textContent = 'No wishes yet. The first lovely note could be yours.';
+        document.getElementById('spotlightName').textContent = 'Waiting with love';
+        document.getElementById('spotlightInitial').textContent = '♡';
+        document.getElementById('spotlightTime').textContent = '';
+        document.getElementById('spotlightPosition').textContent = '0 of 0';
+        previous.disabled = true; next.disabled = true; return;
+    }
+    document.getElementById('spotlightMessage').textContent = wish.message;
+    document.getElementById('spotlightName').textContent = wish.name;
+    document.getElementById('spotlightInitial').textContent = Array.from(wish.name.trim())[0]?.toUpperCase() || '♡';
+    const time = document.getElementById('spotlightTime');
+    time.dateTime = wish.createdAt; time.textContent = formatWishDate(wish.createdAt);
+    document.getElementById('spotlightPosition').textContent = `${state.activeWishIndex + 1} of ${state.wishes.length}`;
+    previous.disabled = state.wishes.length < 2; next.disabled = state.wishes.length < 2;
+    if (animate && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        stage.classList.remove('slide-forward', 'slide-back');
+        void stage.offsetWidth;
+        stage.classList.add(direction < 0 ? 'slide-back' : 'slide-forward');
+    }
 }
 
 function createWishCard(wish) {
