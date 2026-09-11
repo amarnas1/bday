@@ -81,7 +81,6 @@ function setupWishes() {
         if (!wallOnly) window.setTimeout(() => document.getElementById('wisherName').focus(), 0);
     };
     document.getElementById('openCountdownWishes').addEventListener('click', () => openDialog());
-    document.getElementById('viewCountdownWishes').addEventListener('click', () => openDialog(true, 'single'));
     document.getElementById('openWishes').addEventListener('click', () => openDialog());
     document.getElementById('viewWishes').addEventListener('click', () => openDialog(true, 'single'));
     document.getElementById('viewAllWishes').addEventListener('click', () => openDialog(true, 'all'));
